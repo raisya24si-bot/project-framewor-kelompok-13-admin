@@ -19,7 +19,7 @@
         </nav>
 
         <h3 class="font-weight-bold mt-3">Edit Fasilitas Umum</h3>
-        <p class="text-muted mb-0">Perbarui data fasilitas sesuai kebutuhan</p>
+        <p class="text-muted mb-0">Perbarui data fasilitas sesuai kebutuhan.</p>
     </div>
 
     {{-- FORM --}}
@@ -38,10 +38,7 @@
                         <input type="text" name="nama"
                                class="form-control @error('nama') is-invalid @enderror"
                                value="{{ old('nama', $data->nama) }}">
-
-                        @error('nama')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('nama') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- JENIS --}}
@@ -50,12 +47,11 @@
                         <select name="jenis" class="form-control @error('jenis') is-invalid @enderror">
                             <option value="Aula" {{ $data->jenis == 'Aula' ? 'selected' : '' }}>Aula</option>
                             <option value="Lapangan" {{ $data->jenis == 'Lapangan' ? 'selected' : '' }}>Lapangan</option>
+                            <option value="Gedung" {{ $data->jenis == 'Gedung' ? 'selected' : '' }}>Gedung</option>
+                            <option value="Ruang" {{ $data->jenis == 'Ruang' ? 'selected' : '' }}>Ruang</option>
                             <option value="Lainnya" {{ $data->jenis == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
-
-                        @error('jenis')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('jenis') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- ALAMAT --}}
@@ -64,10 +60,7 @@
                         <input type="text" name="alamat"
                                class="form-control @error('alamat') is-invalid @enderror"
                                value="{{ old('alamat', $data->alamat) }}">
-
-                        @error('alamat')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('alamat') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- RT --}}
@@ -78,10 +71,7 @@
                                 <option value="{{ $i }}" {{ $data->rt == $i ? 'selected' : '' }}>{{ $i }}</option>
                             @endfor
                         </select>
-
-                        @error('rt')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('rt') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- RW --}}
@@ -92,10 +82,7 @@
                                 <option value="{{ $i }}" {{ $data->rw == $i ? 'selected' : '' }}>{{ $i }}</option>
                             @endfor
                         </select>
-
-                        @error('rw')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('rw') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- KAPASITAS --}}
@@ -104,21 +91,15 @@
                         <input type="number" name="kapasitas"
                                class="form-control @error('kapasitas') is-invalid @enderror"
                                value="{{ old('kapasitas', $data->kapasitas) }}">
-
-                        @error('kapasitas')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('kapasitas') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- DESKRIPSI --}}
                     <div class="col-md-12 mb-3">
                         <label class="font-weight-bold">Deskripsi</label>
-                        <textarea name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror"
-                                  rows="3">{{ old('deskripsi', $data->deskripsi) }}</textarea>
-
-                        @error('deskripsi')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        <textarea name="deskripsi" rows="3"
+                                  class="form-control @error('deskripsi') is-invalid @enderror">{{ old('deskripsi', $data->deskripsi) }}</textarea>
+                        @error('deskripsi') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- FOTO --}}
@@ -126,14 +107,12 @@
                         <label class="font-weight-bold">Foto Fasilitas</label><br>
 
                         @if ($data->foto)
-                            <img src="{{ asset('storage/' . $data->foto) }}" width="100" class="rounded mb-2 shadow-sm">
+                            <img src="{{ asset('storage/' . $data->foto) }}"
+                                 width="100" class="rounded mb-2 shadow-sm">
                         @endif
 
                         <input type="file" name="foto" class="form-control-file @error('foto') is-invalid @enderror">
-
-                        @error('foto')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('foto') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- SOP --}}
@@ -148,10 +127,7 @@
                         @endif
 
                         <input type="file" name="sop" class="form-control-file @error('sop') is-invalid @enderror">
-
-                        @error('sop')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('sop') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                 </div>
@@ -165,6 +141,7 @@
                 </div>
 
             </form>
+
         </div>
     </div>
 

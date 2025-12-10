@@ -11,15 +11,19 @@ class PetugasFasilitasController extends Controller
 {
     public function index()
     {
-        $data = PetugasFasilitas::with('fasilitas', 'warga')->get();
-        return view('petugas.index', compact('data'));
+        // PAGINATION DIBENERIN
+        $data = PetugasFasilitas::with(['fasilitas', 'warga'])
+            ->paginate(10);
+
+        return view('admin.petugas.index', compact('data'));
     }
 
     public function create()
     {
         $fasilitas = FasilitasUmum::all();
         $warga = Warga::all();
-        return view('petugas.create', compact('fasilitas', 'warga'));
+
+        return view('admin.petugas.create', compact('fasilitas', 'warga'));
     }
 
     public function store(Request $request)
@@ -30,7 +34,11 @@ class PetugasFasilitasController extends Controller
             'peran' => 'required',
         ]);
 
-        PetugasFasilitas::create($request->all());
+        PetugasFasilitas::create([
+            'fasilitas_id' => $request->fasilitas_id,
+            'petugas_warga_id' => $request->petugas_warga_id,
+            'peran' => $request->peran,
+        ]);
 
         return redirect()->route('petugas.index')
             ->with('success', 'Petugas fasilitas berhasil ditambahkan!');
@@ -41,7 +49,8 @@ class PetugasFasilitasController extends Controller
         $data = PetugasFasilitas::findOrFail($id);
         $fasilitas = FasilitasUmum::all();
         $warga = Warga::all();
-        return view('petugas.edit', compact('data', 'fasilitas', 'warga'));
+
+        return view('admin.petugas.edit', compact('data', 'fasilitas', 'warga'));
     }
 
     public function update(Request $request, $id)
@@ -53,7 +62,12 @@ class PetugasFasilitasController extends Controller
         ]);
 
         $data = PetugasFasilitas::findOrFail($id);
-        $data->update($request->all());
+
+        $data->update([
+            'fasilitas_id' => $request->fasilitas_id,
+            'petugas_warga_id' => $request->petugas_warga_id,
+            'peran' => $request->peran,
+        ]);
 
         return redirect()->route('petugas.index')
             ->with('success', 'Petugas fasilitas berhasil diperbarui!');

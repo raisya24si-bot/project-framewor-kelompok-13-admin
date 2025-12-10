@@ -5,7 +5,7 @@
 @section('content')
 
     {{-- ===========================
-         HEADER (SAMA PERSIS DGN SYARAT)
+         HEADER
     ============================ --}}
     <div class="page-header py-4">
         <nav aria-label="breadcrumb">
@@ -23,6 +23,7 @@
                 <p class="text-muted mb-0">List fasilitas umum yang tersedia di lingkungan RT/RW.</p>
             </div>
 
+            {{-- Tombol Tambah --}}
             <a href="{{ route('fasilitas.create') }}" class="btn btn-success btn-icon-text">
                 <i class="ti-plus btn-icon-prepend"></i> Tambah Fasilitas
             </a>
@@ -66,9 +67,18 @@
             </form>
         </div>
     </div>
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert">
+            <span>&times;</span>
+        </button>
+    </div>
+    @endif
+
 
     {{-- ===========================
-         TABLE
+         TABLE LIST
     ============================ --}}
     <div class="card shadow-sm border-0">
         <div class="card-body">
@@ -99,7 +109,7 @@
                                 <td>{{ $item->rw }}</td>
                                 <td>{{ $item->kapasitas }}</td>
 
-                                {{-- Foto --}}
+                                {{-- FOTO --}}
                                 <td>
                                     @if ($item->foto)
                                         <img src="{{ asset('storage/' . $item->foto) }}"

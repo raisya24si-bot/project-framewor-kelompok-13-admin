@@ -19,7 +19,7 @@
         </nav>
 
         <h3 class="font-weight-bold mt-3">Tambah Fasilitas Umum</h3>
-        <p class="text-muted mb-0">Isi data fasilitas dengan lengkap</p>
+        <p class="text-muted mb-0">Isi data fasilitas dengan lengkap.</p>
     </div>
 
     {{-- FORM CARD --}}
@@ -34,12 +34,10 @@
                     {{-- NAMA FASILITAS --}}
                     <div class="col-md-6 mb-3">
                         <label class="font-weight-bold">Nama Fasilitas</label>
-                        <input type="text" name="nama" class="form-control @error('nama') is-invalid @enderror"
+                        <input type="text" name="nama"
+                               class="form-control @error('nama') is-invalid @enderror"
                                value="{{ old('nama') }}" placeholder="Contoh: Aula Desa">
-
-                        @error('nama')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('nama') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- JENIS --}}
@@ -53,21 +51,16 @@
                             <option value="Ruang" {{ old('jenis') == 'Ruang' ? 'selected' : '' }}>Ruang</option>
                             <option value="Lainnya" {{ old('jenis') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
-
-                        @error('jenis')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('jenis') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- ALAMAT --}}
                     <div class="col-md-12 mb-3">
                         <label class="font-weight-bold">Alamat</label>
-                        <input type="text" name="alamat" class="form-control @error('alamat') is-invalid @enderror"
+                        <input type="text" name="alamat"
+                               class="form-control @error('alamat') is-invalid @enderror"
                                value="{{ old('alamat') }}" placeholder="Contoh: Jl. Merdeka No.12">
-
-                        @error('alamat')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('alamat') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- RT --}}
@@ -79,10 +72,7 @@
                                 <option value="{{ $i }}" {{ old('rt') == $i ? 'selected' : '' }}>{{ $i }}</option>
                             @endfor
                         </select>
-
-                        @error('rt')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('rt') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- RW --}}
@@ -94,10 +84,7 @@
                                 <option value="{{ $i }}" {{ old('rw') == $i ? 'selected' : '' }}>{{ $i }}</option>
                             @endfor
                         </select>
-
-                        @error('rw')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('rw') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- KAPASITAS --}}
@@ -106,10 +93,7 @@
                         <input type="number" name="kapasitas"
                                class="form-control @error('kapasitas') is-invalid @enderror"
                                value="{{ old('kapasitas') }}" placeholder="Contoh: 50">
-
-                        @error('kapasitas')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('kapasitas') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- DESKRIPSI --}}
@@ -118,30 +102,23 @@
                         <textarea name="deskripsi" rows="3"
                                   class="form-control @error('deskripsi') is-invalid @enderror"
                                   placeholder="Tambahkan keterangan fasilitas...">{{ old('deskripsi') }}</textarea>
-
-                        @error('deskripsi')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @error('deskripsi') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- FOTO --}}
                     <div class="col-md-6 mb-3">
                         <label class="font-weight-bold">Foto Fasilitas</label>
-                        <input type="file" name="foto" class="form-control-file @error('foto') is-invalid @enderror">
-
-                        @error('foto')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        <input type="file" name="foto"
+                               class="form-control-file @error('foto') is-invalid @enderror">
+                        @error('foto') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     {{-- SOP --}}
                     <div class="col-md-6 mb-3">
                         <label class="font-weight-bold">File SOP (PDF)</label>
-                        <input type="file" name="sop" class="form-control-file @error('sop') is-invalid @enderror">
-
-                        @error('sop')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        <input type="file" name="sop"
+                               class="form-control-file @error('sop') is-invalid @enderror">
+                        @error('sop') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                 </div>

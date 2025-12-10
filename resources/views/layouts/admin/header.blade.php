@@ -72,14 +72,34 @@
       </li>
 
       <li class="nav-item nav-profile dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-          <img src="{{ asset('fasilitas-admin/images/faces/face28.jpg') }}" alt="profile"/>
+    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-toggle="dropdown" id="profileDropdown">
+
+        {{-- Foto user kalau ada, kalau tidak pakai default --}}
+        <img src="{{ Auth::user()->avatar ?? asset('fasilitas-admin/images/faces/face28.jpg') }}"
+             alt="profile"
+             class="rounded-circle"
+             style="width: 35px; height: 35px; object-fit: cover;">
+
+        {{-- Nama user --}}
+        <span class="ml-2 font-weight-bold text-dark">
+            {{ Auth::user()->name ?? 'User' }}
+        </span>
+    </a>
+
+    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+        <a class="dropdown-item">
+            <i class="ti-user text-primary"></i> Profil Saya
         </a>
-        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-          <a class="dropdown-item"><i class="ti-settings text-primary"></i> Settings</a>
-          <a class="dropdown-item"><i class="ti-power-off text-primary"></i> Logout</a>
-        </div>
-      </li>
+
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button class="dropdown-item" type="submit">
+                <i class="ti-power-off text-primary"></i> Logout
+            </button>
+        </form>
+    </div>
+</li>
+
 
       <li class="nav-item nav-settings d-none d-lg-flex">
         <a class="nav-link" href="#"><i class="icon-ellipsis"></i></a>
