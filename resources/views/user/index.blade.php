@@ -26,9 +26,10 @@
     <div class="card-body">
 
         <div class="table-responsive">
-            <table class="table table-hover text-center">
+            <table class="table table-hover align-middle text-center">
                 <thead class="thead-light">
                     <tr>
+                        <th>Foto</th>
                         <th>Nama</th>
                         <th>Email</th>
                         <th>Role</th>
@@ -39,17 +40,35 @@
                 <tbody>
                     @forelse ($data as $user)
                         <tr>
-                            <td>{{ $user->name }}</td>
+                            {{-- FOTO PROFIL --}}
+                            <td>
+                                <img src="{{ $user->avatar
+                                    ? asset('storage/' . $user->avatar)
+                                    : asset('fasilitas-admin/images/faces/face28.jpg') }}"
+                                     width="40"
+                                     height="40"
+                                     class="rounded-circle shadow-sm"
+                                     style="object-fit: cover;">
+                            </td>
+
+                            <td class="font-weight-bold">{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td><span class="badge badge-info">{{ ucfirst($user->role) }}</span></td>
 
                             <td>
-                                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-primary btn-sm">
+                                <span class="badge badge-info">
+                                    {{ ucfirst($user->role) }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <a href="{{ route('user.edit', $user->id) }}"
+                                   class="btn btn-primary btn-sm">
                                     <i class="ti-pencil"></i>
                                 </a>
 
                                 <form action="{{ route('user.destroy', $user->id) }}"
-                                      method="POST" class="d-inline"
+                                      method="POST"
+                                      class="d-inline"
                                       onsubmit="return confirm('Yakin ingin menghapus user ini?')">
                                     @csrf
                                     @method('DELETE')
@@ -62,7 +81,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-muted py-4">Belum ada user.</td>
+                            <td colspan="5" class="text-muted py-4">
+                                Belum ada user.
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

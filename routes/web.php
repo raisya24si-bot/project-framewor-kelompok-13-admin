@@ -46,17 +46,28 @@ Route::post('/logout', function () {
 
 Route::middleware(['checkislogin'])->group(function () {
 
+    // ========================
+    // ADMIN & PETUGAS
+    // ========================
     Route::middleware(['checkrole:admin,petugas'])->group(function () {
         Route::resource('petugas', PetugasFasilitasController::class);
     });
 
+    // ========================
+    // ADMIN ONLY
+    // ========================
     Route::middleware(['checkrole:admin'])->group(function () {
+
         Route::resource('user', UserController::class);
         Route::resource('fasilitas', FasilitasUmumController::class);
         Route::resource('syarat', SyaratFasilitasController::class);
         Route::resource('media', MediaController::class);
         Route::resource('peminjaman', PeminjamanFasilitasController::class);
         Route::resource('pembayaran', PembayaranFasilitasController::class);
+
+        // 🔥 MEDIA VIEW (ADMIN ONLY)
+        Route::get('/media/view/{id}', [MediaController::class, 'view'])
+            ->name('media.view');
     });
 
 });

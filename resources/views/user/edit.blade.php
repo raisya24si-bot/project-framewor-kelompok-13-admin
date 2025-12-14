@@ -24,7 +24,8 @@
 <div class="card shadow-sm border-0">
     <div class="card-body">
 
-        <form action="{{ route('user.update', $data->id) }}" method="POST">
+        {{-- WAJIB multipart --}}
+        <form action="{{ route('user.update', $data->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -53,15 +54,35 @@
                     <small class="text-muted">Kosongkan jika tidak ingin mengganti password.</small>
                 </div>
 
-                {{-- ROLE --}}
+                {{-- ROLE (FIX: admin & petugas) --}}
                 <div class="col-md-6 mb-3">
                     <label class="font-weight-bold">Role</label>
                     <select name="role" class="form-control">
                         <option value="admin"   {{ $data->role == 'admin' ? 'selected' : '' }}>Admin</option>
                         <option value="petugas" {{ $data->role == 'petugas' ? 'selected' : '' }}>Petugas</option>
-                        <option value="warga"   {{ $data->role == 'warga' ? 'selected' : '' }}>Warga</option>
                     </select>
                     @error('role') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                {{-- AVATAR / FOTO PROFIL --}}
+                <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold">Foto Profil</label>
+
+                    {{-- preview foto lama --}}
+                    @if ($data->avatar)
+                        <div class="mb-2">
+                            <img src="{{ asset('storage/' . $data->avatar) }}"
+                                 width="80"
+                                 class="rounded shadow-sm">
+                        </div>
+                    @endif
+
+                    <input type="file" name="avatar" class="form-control">
+                    <small class="text-muted">
+                        jpg / png, max 2MB. Kosongkan jika tidak ingin mengganti foto.
+                    </small>
+
+                    @error('avatar') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
             </div>

@@ -24,7 +24,8 @@
 <div class="card shadow-sm border-0">
     <div class="card-body">
 
-        <form action="{{ route('user.store') }}" method="POST">
+        {{-- WAJIB multipart --}}
+        <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="row">
@@ -52,15 +53,22 @@
                     @error('password') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                {{-- ROLE --}}
+                {{-- ROLE (FIX) --}}
                 <div class="col-md-6 mb-3">
                     <label class="font-weight-bold">Role</label>
                     <select name="role" class="form-control">
                         <option value="admin">Admin</option>
                         <option value="petugas">Petugas</option>
-                        <option value="warga">Warga</option>
                     </select>
                     @error('role') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                {{-- AVATAR --}}
+                <div class="col-md-6 mb-3">
+                    <label class="font-weight-bold">Foto Profil</label>
+                    <input type="file" name="avatar" class="form-control">
+                    <small class="text-muted">jpg / png, max 2MB</small>
+                    @error('avatar') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
             </div>

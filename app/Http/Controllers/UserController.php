@@ -28,15 +28,24 @@ class UserController extends Controller
             'name'     => 'required',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:5',
-            'role'     => 'required|in:admin,petugas,warga', // role sesuai kebutuhan kamu
+            'role'     => 'required|in:admin,petugas',
+            'avatar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        User::create([
+        $data = [
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role'     => $request->role,
-        ]);
+        ];
+
+        // 🔥 SIMPAN AVATAR
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = $request->file('avatar')
+                ->store('avatars', 'public');
+        }
+
+        User::create($data);
 
         return redirect()->route('user.index')
             ->with('success', 'User berhasil ditambahkan!');
@@ -53,27 +62,32 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'  => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'role'  => 'required|in:admin,petugas,warga',
+            'name'   => 'required',
+            'email'  => 'required|email|unique:users,email,' . $id,
+            'role'   => 'required|in:admin,petugas',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $user = User::findOrFail($id);
 
-        $user->name  = $request->name;
-        $user->email = $request->email;
-        $user->role  = $request->role;
+        $data = [
+            'name'  => $request->name,
+            'email' => $request->email,
+            'role'  => $request->role,
+        ];
 
         // Update password jika diisi
         if ($request->filled('password')) {
-            $request->validate([
-                'password' => 'min:5'
-            ]);
-
-            $user->password = Hash::make($request->password);
+            $data['password'] = Hash::make($request->password);
         }
 
-        $user->save();
+        // 🔥 UPDATE AVATAR
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = $request->file('avatar')
+                ->store('avatars', 'public');
+        }
+
+        $user->update($data);
 
         return redirect()->route('user.index')
             ->with('success', 'User berhasil diperbarui!');
