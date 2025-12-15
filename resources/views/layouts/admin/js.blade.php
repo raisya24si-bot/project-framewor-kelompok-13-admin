@@ -23,51 +23,5 @@
 <!-- End custom js -->
 
 
-<!-- ============================================================
-    🔥 FIX FINAL: MATIKAN DATATABLES KHUSUS HALAMAN FASILITAS
-=============================================================== -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    // Jika halaman URL mengandung "/fasilitas", matikan DataTables
-    if (window.location.pathname.includes('/fasilitas')) {
-
-        console.log("🔴 DataTables dimatikan untuk halaman Fasilitas.");
-
-        // MATIKAN plugin DataTables agar tidak auto-initialize
-        $.fn.dataTable = undefined;
-        $.fn.DataTable = undefined;
-
-        // Hapus wrapper DataTables jika sudah terlanjur terbentuk
-        $('.dataTables_wrapper').remove();
-    }
-
-    // =============================================================
-    // ⚠️ Nonaktifkan inisialisasi DataTables global di fasilitas
-    // =============================================================
-    const fasilitasTable = $('#fasilitas-table');
-    if (fasilitasTable.length && !window.location.pathname.includes('/fasilitas')) {
-
-        // Ini hanya aktif untuk halaman lain, bukan fasilitas
-        fasilitasTable.DataTable({
-            language: {
-                search: "Cari:",
-                lengthMenu: "Tampilkan _MENU_ data per halaman",
-                zeroRecords: "Tidak ada data ditemukan",
-                info: "Menampilkan _PAGE_ dari _PAGES_",
-                infoEmpty: "Tidak ada data tersedia",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "›",
-                    previous: "‹"
-                }
-            },
-            pageLength: 5,
-            responsive: true
-        });
-    }
-});
-</script>
 <!-- Placeholder untuk script tambahan dari halaman tertentu -->
 @stack('scripts')

@@ -49,7 +49,6 @@
                             <option value="Lapangan" {{ old('jenis') == 'Lapangan' ? 'selected' : '' }}>Lapangan</option>
                             <option value="Gedung" {{ old('jenis') == 'Gedung' ? 'selected' : '' }}>Gedung</option>
                             <option value="Ruang" {{ old('jenis') == 'Ruang' ? 'selected' : '' }}>Ruang</option>
-                            <option value="Lainnya" {{ old('jenis') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
                         @error('jenis') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>

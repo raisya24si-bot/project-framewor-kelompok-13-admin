@@ -16,7 +16,7 @@ use App\Http\Controllers\UserController;
 // HALAMAN PUBLIC
 // ------------------------
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return redirect()->route('login');
 });
 
 Route::get('/ketua', function () {
@@ -27,9 +27,8 @@ Route::get('/anggota', function () {
     return view('anggota');
 });
 
-Route::get('/dashboard', function () {
-    return view('admin.dashboard.index');
-})->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
 
 
 // ------------------------
