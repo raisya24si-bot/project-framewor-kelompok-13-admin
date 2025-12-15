@@ -3,53 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\FasilitasUmum;
+use App\Models\Media;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class FasilitasUmumController extends Controller
 {
-    // ===========================
-    // INDEX (LIST DATA + FILTER)
-    // ===========================
     public function index(Request $request)
     {
-        $search = $request->search;
-        $jenis  = $request->jenis;
+        $query = FasilitasUmum::with('media');
 
-        $query = FasilitasUmum::query();
-
-        // Search nama / alamat
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nama', 'like', "%$search%")
-                  ->orWhere('alamat', 'like', "%$search%");
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                  ->orWhere('alamat', 'like', '%' . $request->search . '%');
             });
         }
 
-        // Filter jenis
-        if ($jenis) {
-            $query->where('jenis', $jenis);
+        if ($request->jenis) {
+            $query->where('jenis', $request->jenis);
         }
 
-        // Pagination
-        $data = $query->orderBy('fasilitas_id', 'DESC')
-                      ->paginate(10)
-                      ->appends($request->query());
-
+        $data = $query->latest('fasilitas_id')->paginate(10);
         return view('admin.fasilitas.index', compact('data'));
     }
 
-    // ===========================
-    // FORM CREATE
-    // ===========================
     public function create()
     {
         return view('admin.fasilitas.create');
     }
 
-    // ===========================
-    // STORE DATA BARU
-    // ===========================
     public function store(Request $request)
     {
         $request->validate([
@@ -59,110 +42,110 @@ class FasilitasUmumController extends Controller
             'rt'        => 'required',
             'rw'        => 'required',
             'kapasitas' => 'required|integer',
-            'deskripsi' => 'nullable',
-
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'sop'  => 'nullable|mimes:pdf|max:5120',
+            'foto'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'sop'       => 'nullable|mimes:pdf|max:5120',
         ]);
 
-        $data = $request->except(['foto', 'sop']);
+        $fasilitas = FasilitasUmum::create(
+            $request->except(['foto', 'sop'])
+        );
 
-        // Upload foto
+        // ================= FOTO =================
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('fasilitas/foto', 'public');
+            $path = $request->file('foto')->store('fasilitas/foto', 'public');
+
+            Media::create([
+                'ref_table' => 'fasilitas_umum',
+                'ref_id'    => $fasilitas->fasilitas_id,
+                'file_url'  => $path,
+                'mime_type' => $request->file('foto')->getMimeType(),
+                'caption'   => 'Foto fasilitas',
+            ]);
         }
 
-        // Upload SOP
+        // ================= SOP =================
         if ($request->hasFile('sop')) {
-            $data['sop'] = $request->file('sop')->store('fasilitas/sop', 'public');
-        }
+            $path = $request->file('sop')->store('fasilitas/sop', 'public');
 
-        FasilitasUmum::create($data);
+            Media::create([
+                'ref_table' => 'fasilitas_umum',
+                'ref_id'    => $fasilitas->fasilitas_id,
+                'file_url'  => $path,
+                'mime_type' => $request->file('sop')->getMimeType(),
+                'caption'   => 'SOP fasilitas',
+            ]);
+        }
 
         return redirect()->route('fasilitas.index')
-            ->with('success', 'Fasilitas berhasil ditambahkan!');
+            ->with('success', 'Fasilitas berhasil ditambahkan');
     }
 
-    // ===========================
-    // FORM EDIT
-    // ===========================
     public function edit($id)
     {
-        $data = FasilitasUmum::findOrFail($id);
+        $data = FasilitasUmum::with('media')->findOrFail($id);
         return view('admin.fasilitas.edit', compact('data'));
     }
 
-    // ===========================
-    // UPDATE DATA
-    // ===========================
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama'      => 'required',
-            'jenis'     => 'required',
-            'alamat'    => 'required',
-            'rt'        => 'required',
-            'rw'        => 'required',
-            'kapasitas' => 'required|integer',
-            'deskripsi' => 'nullable',
+        $fasilitas = FasilitasUmum::with('media')->findOrFail($id);
 
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'sop'  => 'nullable|mimes:pdf|max:5120',
-        ]);
+        $fasilitas->update(
+            $request->except(['foto', 'sop'])
+        );
 
-        $data = FasilitasUmum::findOrFail($id);
-        $updateData = $request->except(['foto', 'sop']);
-
-        // =============== FOTO UPDATE ===============
+        // ================= FOTO =================
         if ($request->hasFile('foto')) {
+            $old = $fasilitas->media()->where('mime_type', 'like', 'image%')->first();
 
-            // Hapus foto lama jika ada
-            if ($data->foto) {
-                Storage::disk('public')->delete($data->foto);
+            if ($old) {
+                Storage::disk('public')->delete($old->file_url);
+                $old->delete();
             }
 
-            // Simpan foto baru
-            $updateData['foto'] = $request->file('foto')->store('fasilitas/foto', 'public');
+            Media::create([
+                'ref_table' => 'fasilitas_umum',
+                'ref_id'    => $fasilitas->fasilitas_id,
+                'file_url'  => $request->file('foto')->store('fasilitas/foto', 'public'),
+                'mime_type' => $request->file('foto')->getMimeType(),
+                'caption'   => 'Foto fasilitas',
+            ]);
         }
 
-        // =============== SOP UPDATE ===============
+        // ================= SOP =================
         if ($request->hasFile('sop')) {
+            $old = $fasilitas->media()->where('mime_type', 'application/pdf')->first();
 
-            // Hapus sop lama jika ada
-            if ($data->sop) {
-                Storage::disk('public')->delete($data->sop);
+            if ($old) {
+                Storage::disk('public')->delete($old->file_url);
+                $old->delete();
             }
 
-            // Simpan sop baru
-            $updateData['sop'] = $request->file('sop')->store('fasilitas/sop', 'public');
+            Media::create([
+                'ref_table' => 'fasilitas_umum',
+                'ref_id'    => $fasilitas->fasilitas_id,
+                'file_url'  => $request->file('sop')->store('fasilitas/sop', 'public'),
+                'mime_type' => $request->file('sop')->getMimeType(),
+                'caption'   => 'SOP fasilitas',
+            ]);
         }
-
-        // Update database
-        $data->update($updateData);
 
         return redirect()->route('fasilitas.index')
-            ->with('success', 'Fasilitas berhasil diperbarui!');
+            ->with('success', 'Fasilitas berhasil diperbarui');
     }
 
-    // ===========================
-    // DELETE DATA
-    // ===========================
     public function destroy($id)
     {
-        $data = FasilitasUmum::findOrFail($id);
+        $fasilitas = FasilitasUmum::with('media')->findOrFail($id);
 
-        // Hapus file foto & sop jika ada
-        if ($data->foto) {
-            Storage::disk('public')->delete($data->foto);
+        foreach ($fasilitas->media as $media) {
+            Storage::disk('public')->delete($media->file_url);
+            $media->delete();
         }
 
-        if ($data->sop) {
-            Storage::disk('public')->delete($data->sop);
-        }
-
-        $data->delete();
+        $fasilitas->delete();
 
         return redirect()->route('fasilitas.index')
-            ->with('success', 'Fasilitas berhasil dihapus!');
+            ->with('success', 'Fasilitas berhasil dihapus');
     }
 }
