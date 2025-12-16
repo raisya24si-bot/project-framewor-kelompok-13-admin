@@ -4,16 +4,9 @@
 
     {{-- LOGO BESAR --}}
     <a class="navbar-brand brand-logo mr-5 d-flex align-items-center" href="{{ route('dashboard') }}">
-      <img src="{{ asset('assets/logo/logo-faspin.png') }}"
+      <img src="{{ asset('assets/logo/key.png') }}"
            alt="FasPin"
-           style="height: 38px;">
-    </a>
-
-    {{-- LOGO MINI (SIDEBAR COLLAPSE) --}}
-    <a class="navbar-brand brand-logo-mini" href="{{ route('dashboard') }}">
-      <img src="{{ asset('assets/logo/logo-faspin-mini.png') }}"
-           alt="FasPin"
-           style="height: 32px;">
+           style="height: 40px;">
     </a>
 
   </div>
