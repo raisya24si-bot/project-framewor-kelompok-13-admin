@@ -7,7 +7,6 @@
       <img src="{{ asset('assets/logo/logo-faspin.png') }}"
            alt="FasPin"
            style="height: 38px;">
-      <span class="ml-2 font-weight-bold text-dark">FasPin</span>
     </a>
 
     {{-- LOGO MINI (SIDEBAR COLLAPSE) --}}
