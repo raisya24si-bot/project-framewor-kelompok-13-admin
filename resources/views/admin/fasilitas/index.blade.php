@@ -2,6 +2,55 @@
 
 @section('title', 'Fasilitas Umum')
 
+@push('styles')
+<style>
+    .foto-thumb {
+        width: 110px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: zoom-in;
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .foto-thumb:hover {
+        transform: scale(1.15);
+        box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    }
+
+    /* MODAL */
+    .foto-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0,0,0,.8);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .foto-modal.show {
+        display: flex;
+    }
+
+    .foto-modal img {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 10px;
+        box-shadow: 0 10px 40px rgba(0,0,0,.4);
+    }
+
+    .foto-modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 32px;
+        color: #fff;
+        cursor: pointer;
+    }
+</style>
+@endpush
+
 @section('content')
 
 {{-- HEADER --}}
@@ -18,7 +67,9 @@
     <div class="d-flex justify-content-between align-items-center mt-3">
         <div>
             <h3 class="font-weight-bold mb-1">Data Fasilitas Umum</h3>
-            <p class="text-muted mb-0">List fasilitas umum yang tersedia di lingkungan RT/RW.</p>
+            <p class="text-muted mb-0">
+                List fasilitas umum yang tersedia di lingkungan RT/RW.
+            </p>
         </div>
 
         <a href="{{ route('fasilitas.create') }}" class="btn btn-success btn-icon-text">
@@ -42,7 +93,7 @@
                     <select name="jenis" class="form-control">
                         <option value="">Semua Jenis</option>
                         @foreach (['Ruang','Aula','Lapangan','Gedung'] as $j)
-                            <option value="{{ $j }}" {{ request('jenis')==$j ? 'selected' : '' }}>
+                            <option value="{{ $j }}" {{ request('jenis')==$j?'selected':'' }}>
                                 {{ $j }}
                             </option>
                         @endforeach
@@ -59,6 +110,7 @@
     </div>
 </div>
 
+{{-- ALERT --}}
 @if (session('success'))
 <div class="alert alert-success alert-dismissible fade show mt-2">
     {{ session('success') }}
@@ -71,7 +123,6 @@
 {{-- TABLE --}}
 <div class="card shadow-sm border-0">
     <div class="card-body">
-
         <div class="table-responsive">
             <table class="table table-hover text-center align-middle">
                 <thead class="thead-light">
@@ -90,17 +141,6 @@
 
                 <tbody>
                 @forelse ($data as $item)
-
-                    @php
-                        $foto = $item->media
-                            ->where('mime_type', 'like', 'image%')
-                            ->first();
-
-                        $sop = $item->media
-                            ->where('mime_type', 'application/pdf')
-                            ->first();
-                    @endphp
-
                     <tr>
                         <td class="font-weight-bold">{{ $item->nama }}</td>
                         <td>{{ $item->jenis }}</td>
@@ -111,9 +151,11 @@
 
                         {{-- FOTO --}}
                         <td>
-                            @if ($foto)
-                                <img src="{{ asset('storage/'.$foto->file_url) }}"
-                                     width="60" class="rounded shadow-sm">
+                            @if ($item->foto())
+                                <img src="{{ asset('storage/'.$item->foto()->file_url) }}"
+                                     alt="Foto {{ $item->nama }}"
+                                     class="foto-thumb"
+                                     onclick="openFotoModal('{{ asset('storage/'.$item->foto()->file_url) }}')">
                             @else
                                 <span class="badge badge-light text-muted">Tidak ada</span>
                             @endif
@@ -121,8 +163,9 @@
 
                         {{-- SOP --}}
                         <td>
-                            @if ($sop)
-                                <a href="{{ asset('storage/'.$sop->file_url) }}" target="_blank"
+                            @if ($item->sop())
+                                <a href="{{ asset('storage/'.$item->sop()->file_url) }}"
+                                   target="_blank"
                                    class="btn btn-outline-info btn-sm">
                                     <i class="ti-file"></i> SOP
                                 </a>
@@ -139,7 +182,8 @@
                             </a>
 
                             <form action="{{ route('fasilitas.destroy', $item->fasilitas_id) }}"
-                                  method="POST" class="d-inline"
+                                  method="POST"
+                                  class="d-inline"
                                   onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                 @csrf
                                 @method('DELETE')
@@ -149,7 +193,6 @@
                             </form>
                         </td>
                     </tr>
-
                 @empty
                     <tr>
                         <td colspan="9" class="text-center text-muted py-4">
@@ -164,8 +207,32 @@
         <div class="mt-4 d-flex justify-content-center">
             {{ $data->links() }}
         </div>
-
     </div>
 </div>
 
+{{-- MODAL FOTO --}}
+<div id="fotoModal" class="foto-modal" onclick="closeFotoModal()">
+    <span class="foto-modal-close">&times;</span>
+    <img id="fotoModalImg">
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+    function openFotoModal(src) {
+        document.getElementById('fotoModalImg').src = src;
+        document.getElementById('fotoModal').classList.add('show');
+    }
+
+    function closeFotoModal() {
+        document.getElementById('fotoModal').classList.remove('show');
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeFotoModal();
+        }
+    });
+</script>
+@endpush

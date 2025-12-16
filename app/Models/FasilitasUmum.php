@@ -19,6 +19,10 @@ class FasilitasUmum extends Model
         'deskripsi',
     ];
 
+    /* =========================
+       RELATIONS
+    ========================== */
+
     public function syarat()
     {
         return $this->hasMany(SyaratFasilitas::class, 'fasilitas_id');
@@ -31,7 +35,23 @@ class FasilitasUmum extends Model
 
     public function media()
     {
-        return $this->hasMany(Media::class, 'ref_id')
-                    ->where('ref_table', 'fasilitas_umum');
+        return $this->hasMany(Media::class, 'ref_id', 'fasilitas_id')
+            ->where('ref_table', 'fasilitas_umum');
+    }
+
+    /* =========================
+       MEDIA HELPERS
+    ========================== */
+
+    public function foto()
+    {
+        return $this->media
+            ->first(fn ($m) => str_starts_with($m->mime_type, 'image'));
+    }
+
+    public function sop()
+    {
+        return $this->media
+            ->first(fn ($m) => $m->mime_type === 'application/pdf');
     }
 }
