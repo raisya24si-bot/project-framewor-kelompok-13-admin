@@ -186,7 +186,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="blog-item bg-light rounded overflow-hidden shadow-sm h-100">
                         <div class="blog-img position-relative overflow-hidden">
-                         <img class="img-fluid w-100" src="{{ asset('fasilitas-guest/img/LAPANGAN3.png') }}" alt="Lapangan Desa">
+                         <img class="img-fluid w-100" src="{{ asset('fasilitas-guest/img/lapangan3.png') }}" alt="Lapangan Desa">
                             <div class="position-absolute top-0 start-0 bg-success text-white rounded-end py-2 px-4 mt-4">
                                 <small>Outdoor</small>
                             </div>
@@ -201,7 +201,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="blog-item bg-light rounded overflow-hidden shadow-sm h-100">
                         <div class="blog-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{{ asset('fasilitas-guest/img/TENDA-kursi2.png') }}" alt="Tenda Kursi">                            <div class="position-absolute top-0 start-0 bg-warning text-dark rounded-end py-2 px-4 mt-4">
+                        <img class="img-fluid w-100" src="{{ asset('fasilitas-guest/img/tenda-kursi2.png') }}" alt="Tenda Kursi">                            <div class="position-absolute top-0 start-0 bg-warning text-dark rounded-end py-2 px-4 mt-4">
                                 <small>Peralatan</small>
                             </div>
                         </div>
