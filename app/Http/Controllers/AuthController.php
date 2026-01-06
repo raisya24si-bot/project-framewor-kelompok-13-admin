@@ -9,9 +9,8 @@ class AuthController extends Controller
 {
     public function index()
     {
-        // Jika sudah login → lempar ke dashboard
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route('admin.dashboard');
         }
 
         return view('auth.login');
@@ -28,7 +27,17 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('dashboard')->with('success', 'Login berhasil!');
+
+            $user = Auth::user();
+
+            // Admin & Petugas → dashboard admin
+            if (in_array($user->role, ['admin', 'petugas'])) {
+                return redirect()->route('admin.dashboard')
+                    ->with('success', 'Login berhasil!');
+            }
+
+            // Role lain (kalau ada)
+            return redirect()->route('login');
         }
 
         return back()->withErrors([

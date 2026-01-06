@@ -21,4 +21,23 @@ class PembayaranFasilitas extends Model
     {
         return $this->belongsTo(PeminjamanFasilitas::class, 'pinjam_id');
     }
+
+    //relasi bukti bayar
+    public function media()
+    {
+        return $this->hasMany(Media::class, 'ref_id')
+            ->where('ref_table', 'pembayaran_fasilitas');
+    }
+
+    //ambil bukti pertama
+    public function bukti()
+    {
+        return $this->media()->first();
+    }
+
+    //format rupiah
+    public function getJumlahFormattedAttribute()
+    {
+        return 'Rp ' . number_format($this->jumlah, 0, ',', '.');
+    }
 }

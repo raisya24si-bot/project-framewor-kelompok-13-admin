@@ -9,10 +9,10 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                    <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('petugas.index') }}">Petugas Fasilitas</a>
+                    <a href="{{ route('admin.petugas.index') }}">Petugas Fasilitas</a>
                 </li>
                 <li class="breadcrumb-item active">Edit Petugas</li>
             </ol>
@@ -25,7 +25,7 @@
     <div class="card shadow-sm border-0">
         <div class="card-body">
 
-            <form action="{{ route('petugas.update', $data->petugas_id) }}" method="POST">
+            <form action="{{ route('admin.petugas.update', $data->petugas_id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-3">
-                    <a href="{{ route('petugas.index') }}" class="btn btn-light mr-2">Batal</a>
+                    <a href="{{ route('admin.petugas.index') }}" class="btn btn-light mr-2">Batal</a>
                     <button type="submit" class="btn btn-primary">
                         <i class="ti-save mr-2"></i> Update
                     </button>

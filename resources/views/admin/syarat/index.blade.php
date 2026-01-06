@@ -10,7 +10,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                    <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
                 </li>
                 <li class="breadcrumb-item active">Syarat Fasilitas</li>
             </ol>
@@ -23,7 +23,7 @@
             </div>
 
             {{-- FIXED: route syarat.create --}}
-            <a href="{{ route('syarat.create') }}" class="btn btn-success btn-icon-text">
+            <a href="{{ route('admin.syarat.create') }}" class="btn btn-success btn-icon-text">
                 <i class="ti-plus btn-icon-prepend"></i> Tambah Syarat
             </a>
         </div>
@@ -34,7 +34,7 @@
         <div class="card-body">
             
             {{-- FIXED: route syarat.index --}}
-            <form action="{{ route('syarat.index') }}" method="GET">
+            <form action="{{ route('admin.syarat.index') }}" method="GET">
                 <div class="form-row">
 
                     {{-- Search --}}
@@ -101,13 +101,13 @@
 
                                 <td>
                                     {{-- FIXED: route syarat.edit --}}
-                                    <a href="{{ route('syarat.edit', $item->syarat_id) }}"
+                                    <a href="{{ route('admin.syarat.edit', $item->syarat_id) }}"
                                         class="btn btn-primary btn-sm">
                                         <i class="ti-pencil"></i> Edit
                                     </a>
 
                                     {{-- FIXED: destroy tetap syarat.destroy --}}
-                                    <form action="{{ route('syarat.destroy', $item->syarat_id) }}"
+                                    <form action="{{ route('admin.syarat.destroy', $item->syarat_id) }}"
                                           method="POST" class="d-inline"
                                           onsubmit="return confirm('Yakin ingin menghapus data ini?')">
 

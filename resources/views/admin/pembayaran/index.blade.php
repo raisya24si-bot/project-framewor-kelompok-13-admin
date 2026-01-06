@@ -4,14 +4,11 @@
 
 @section('content')
 
-{{-- ===========================
-     HEADER
-============================ --}}
 <div class="page-header py-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
             <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
             </li>
             <li class="breadcrumb-item active">Pembayaran</li>
         </ol>
@@ -23,8 +20,7 @@
             <p class="text-muted mb-0">Daftar pembayaran peminjaman fasilitas.</p>
         </div>
 
-        {{-- tombol tambah (opsional) --}}
-        <a href="{{ route('pembayaran.create') }}" class="btn btn-success">
+        <a href="{{ route('admin.pembayaran.create') }}" class="btn btn-success">
             <i class="ti-plus"></i> Tambah Pembayaran
         </a>
     </div>
@@ -37,11 +33,9 @@
 </div>
 @endif
 
-{{-- ===========================
-     TABLE
-============================ --}}
 <div class="card shadow-sm border-0">
     <div class="card-body">
+
         <div class="table-responsive">
             <table class="table table-hover text-center align-middle">
                 <thead class="thead-light">
@@ -51,30 +45,73 @@
                         <th>Tanggal Bayar</th>
                         <th>Jumlah</th>
                         <th>Metode</th>
+                        <th>Bukti</th>
+                        <th>Resi</th>
                         <th>Keterangan</th>
-                        <th>Aksi</th>
+                        <th width="100">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
                 @forelse ($data as $item)
+
+                    @php
+                        $bukti = $item->media->where('caption', 'Bukti Pembayaran')->first();
+                        $resi  = $item->media->where('caption', 'Resi Pembayaran')->first();
+                    @endphp
+
                     <tr>
                         <td>{{ $item->peminjaman->warga->nama ?? '-' }}</td>
                         <td>{{ $item->peminjaman->fasilitas->nama ?? '-' }}</td>
                         <td>{{ $item->tanggal }}</td>
-                        <td>Rp {{ number_format($item->jumlah,0,',','.') }}</td>
+
+                        <td>{{ $item->jumlah_formatted }}</td>
+
                         <td>{{ $item->metode }}</td>
-                        <td>{{ $item->keterangan ?? '-' }}</td>
+
+                        {{-- BUKTI --}}
                         <td>
-                            <a href="{{ route('pembayaran.edit', $item->bayar_id) }}"
+                            @if($bukti)
+                                <a href="{{ asset('storage/'.$bukti->file_url) }}"
+                                   target="_blank"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="ti-eye"></i> Lihat
+                                </a>
+                            @else
+                                <span class="badge badge-light text-muted">
+                                    Tidak ada
+                                </span>
+                            @endif
+                        </td>
+
+                        {{-- RESI --}}
+                        <td>
+                            @if($resi)
+                                <a href="{{ asset('storage/'.$resi->file_url) }}"
+                                   target="_blank"
+                                   class="btn btn-sm btn-outline-success">
+                                    <i class="ti-receipt"></i> Resi
+                                </a>
+                            @else
+                                <span class="badge badge-light text-muted">
+                                    Belum ada
+                                </span>
+                            @endif
+                        </td>
+
+                        <td>{{ $item->keterangan ?? '-' }}</td>
+
+                        <td>
+                            <a href="{{ route('admin.pembayaran.edit', $item->bayar_id) }}"
                                class="btn btn-primary btn-sm">
-                                <i class="ti-pencil"></i> Edit
+                                <i class="ti-pencil"></i>
                             </a>
                         </td>
                     </tr>
+
                 @empty
                     <tr>
-                        <td colspan="7" class="text-muted py-4">
+                        <td colspan="9" class="text-muted py-4">
                             Belum ada data pembayaran.
                         </td>
                     </tr>
@@ -86,6 +123,7 @@
         <div class="mt-3 d-flex justify-content-center">
             {{ $data->links() }}
         </div>
+
     </div>
 </div>
 

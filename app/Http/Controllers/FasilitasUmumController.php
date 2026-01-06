@@ -1,33 +1,187 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Http\Controllers;
 
-return new class extends Migration {
-    public function up(): void
+use App\Models\FasilitasUmum;
+use App\Models\Media;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+class FasilitasUmumController extends Controller
+{
+    /* =========================
+       ADMIN - INDEX
+    ========================== */
+    public function index(Request $request)
     {
-        Schema::create('fasilitas_umum', function (Blueprint $table) {
-            $table->id('fasilitas_id');
+        $query = FasilitasUmum::with('media');
 
-            $table->string('nama');
-            $table->enum('jenis', ['Aula', 'Lapangan', 'Gedung', 'Ruang']);
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                  ->orWhere('alamat', 'like', '%' . $request->search . '%');
+            });
+        }
 
-            $table->string('alamat')->nullable();
+        if ($request->filled('jenis')) {
+            $query->where('jenis', $request->jenis);
+        }
 
-            $table->enum('rt', ['1','2','3','4','5'])->nullable();
-            $table->enum('rw', ['1','2','3','4','5'])->nullable();
+        $data = $query->latest('fasilitas_id')->paginate(10);
 
-            $table->integer('kapasitas')->nullable();
-
-            $table->text('deskripsi')->nullable();
-
-            $table->timestamps();
-        });
+        return view('admin.fasilitas.index', compact('data'));
     }
 
-    public function down(): void
+    /* =========================
+       ADMIN - CREATE
+    ========================== */
+    public function create()
     {
-        Schema::dropIfExists('fasilitas_umum');
+        return view('admin.fasilitas.create');
     }
-};
+
+    /* =========================
+       ADMIN - STORE
+    ========================== */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama'      => 'required',
+            'jenis'     => 'required',
+            'alamat'    => 'required',
+            'rt'        => 'required',
+            'rw'        => 'required',
+            'kapasitas' => 'required|integer',
+            'foto'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'sop'       => 'nullable|mimes:pdf|max:5120',
+        ]);
+
+        $fasilitas = FasilitasUmum::create(
+            $request->except(['foto', 'sop'])
+        );
+
+        // FOTO
+        if ($request->hasFile('foto')) {
+            Media::create([
+                'ref_table' => 'fasilitas_umum',
+                'ref_id'    => $fasilitas->fasilitas_id,
+                'file_url'  => $request->file('foto')->store('fasilitas/foto', 'public'),
+                'mime_type' => $request->file('foto')->getMimeType(),
+                'caption'   => 'Foto fasilitas',
+            ]);
+        }
+
+        // SOP
+        if ($request->hasFile('sop')) {
+            Media::create([
+                'ref_table' => 'fasilitas_umum',
+                'ref_id'    => $fasilitas->fasilitas_id,
+                'file_url'  => $request->file('sop')->store('fasilitas/sop', 'public'),
+                'mime_type' => 'application/pdf',
+                'caption'   => 'SOP fasilitas',
+            ]);
+        }
+
+        return redirect()
+            ->route('admin.fasilitas.index')
+            ->with('success', 'Fasilitas berhasil ditambahkan');
+    }
+
+    /* =========================
+       ADMIN - EDIT
+    ========================== */
+    public function edit($id)
+    {
+        $data = FasilitasUmum::with('media')->findOrFail($id);
+        return view('admin.fasilitas.edit', compact('data'));
+    }
+
+    /* =========================
+       ADMIN - UPDATE
+    ========================== */
+    public function update(Request $request, $id)
+    {
+        $fasilitas = FasilitasUmum::with('media')->findOrFail($id);
+
+        $fasilitas->update(
+            $request->except(['foto', 'sop'])
+        );
+
+        // UPDATE FOTO
+        if ($request->hasFile('foto')) {
+            $oldFoto = $fasilitas->media()
+                ->where('mime_type', 'like', 'image%')
+                ->first();
+
+            if ($oldFoto) {
+                Storage::disk('public')->delete($oldFoto->file_url);
+                $oldFoto->delete();
+            }
+
+            Media::create([
+                'ref_table' => 'fasilitas_umum',
+                'ref_id'    => $fasilitas->fasilitas_id,
+                'file_url'  => $request->file('foto')->store('fasilitas/foto', 'public'),
+                'mime_type' => $request->file('foto')->getMimeType(),
+                'caption'   => 'Foto fasilitas',
+            ]);
+        }
+
+        // UPDATE SOP
+        if ($request->hasFile('sop')) {
+            $oldSop = $fasilitas->media()
+                ->where('mime_type', 'application/pdf')
+                ->first();
+
+            if ($oldSop) {
+                Storage::disk('public')->delete($oldSop->file_url);
+                $oldSop->delete();
+            }
+
+            Media::create([
+                'ref_table' => 'fasilitas_umum',
+                'ref_id'    => $fasilitas->fasilitas_id,
+                'file_url'  => $request->file('sop')->store('fasilitas/sop', 'public'),
+                'mime_type' => 'application/pdf',
+                'caption'   => 'SOP fasilitas',
+            ]);
+        }
+
+        return redirect()
+            ->route('admin.fasilitas.index')
+            ->with('success', 'Fasilitas berhasil diperbarui');
+    }
+
+    /* =========================
+       ADMIN - DELETE
+    ========================== */
+    public function destroy($id)
+    {
+        $fasilitas = FasilitasUmum::with('media')->findOrFail($id);
+
+        foreach ($fasilitas->media as $media) {
+            Storage::disk('public')->delete($media->file_url);
+            $media->delete();
+        }
+
+        $fasilitas->delete();
+
+        return redirect()
+            ->route('admin.fasilitas.index')
+            ->with('success', 'Fasilitas berhasil dihapus');
+    }
+
+    /* =========================
+       GUEST - INDEX (READ ONLY)
+    ========================== */
+    public function guestIndex(Request $request)
+{
+    $fasilitas = FasilitasUmum::with(['media' => function ($q) {
+            $q->where('mime_type', 'like', 'image%');
+        }])
+        ->latest('fasilitas_id')
+        ->paginate(6); // paginate
+
+    return view('guest.fasilitas.index', compact('fasilitas'));
+}
+}

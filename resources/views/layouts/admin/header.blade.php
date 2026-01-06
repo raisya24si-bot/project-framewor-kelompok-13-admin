@@ -3,7 +3,7 @@
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
 
     {{-- LOGO BESAR --}}
-    <a class="navbar-brand brand-logo mr-5 d-flex align-items-center" href="{{ route('dashboard') }}">
+    <a class="navbar-brand brand-logo mr-5 d-flex align-items-center" href="{{ route('admin.dashboard') }}">
       <img src="{{ asset('assets/logo/key.png') }}"
            alt="FasPin"
            style="height: 40px;">

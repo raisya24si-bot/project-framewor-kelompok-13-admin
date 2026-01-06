@@ -9,10 +9,10 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
             <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{{ route('fasilitas.index') }}">Fasilitas Umum</a>
+                <a href="{{ route('admin.fasilitas.index') }}">Fasilitas Umum</a>
             </li>
             <li class="breadcrumb-item active">Tambah Fasilitas</li>
         </ol>
@@ -26,7 +26,7 @@
 <div class="card shadow-sm border-0">
     <div class="card-body">
 
-        <form action="{{ route('fasilitas.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.fasilitas.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="row">
@@ -130,7 +130,7 @@
 
             {{-- BUTTON --}}
             <div class="d-flex justify-content-end mt-3">
-                <a href="{{ route('fasilitas.index') }}" class="btn btn-light mr-2">Batal</a>
+                <a href="{{ route('admin.fasilitas.index') }}" class="btn btn-light mr-2">Batal</a>
                 <button type="submit" class="btn btn-success">
                     <i class="ti-save mr-2"></i> Simpan
                 </button>

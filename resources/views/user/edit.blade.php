@@ -8,10 +8,10 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
             <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{{ route('user.index') }}">Manajemen User</a>
+                <a href="{{ route('admin.user.index') }}">Manajemen User</a>
             </li>
             <li class="breadcrumb-item active">Edit User</li>
         </ol>
@@ -25,7 +25,7 @@
     <div class="card-body">
 
         {{-- WAJIB multipart --}}
-        <form action="{{ route('user.update', $data->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.user.update', $data->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -88,7 +88,7 @@
             </div>
 
             <div class="d-flex justify-content-end mt-3">
-                <a href="{{ route('user.index') }}" class="btn btn-light mr-2">Batal</a>
+                <a href="{{ route('admin.user.index') }}" class="btn btn-light mr-2">Batal</a>
                 <button class="btn btn-primary">Update</button>
             </div>
 

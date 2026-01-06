@@ -8,7 +8,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
             <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
             </li>
             <li class="breadcrumb-item active">Media File</li>
         </ol>
@@ -20,7 +20,7 @@
             <p class="text-muted mb-0">Daftar file media (foto, dokumen, bukti).</p>
         </div>
 
-        <a href="{{ route('media.create') }}" class="btn btn-success">
+        <a href="{{ route('admin.media.create') }}" class="btn btn-success">
             <i class="ti-plus"></i> Upload Media
         </a>
     </div>
@@ -54,7 +54,7 @@
                     <tr>
                         {{-- PREVIEW --}}
                         <td>
-                            <a href="{{ route('media.view', $item->media_id) }}"
+                            <a href="{{ route('admin.media.show', $item->media_id) }}"
                                class="btn btn-outline-info btn-sm">
                                 <i class="ti-eye"></i> Lihat
                             </a>
@@ -66,7 +66,7 @@
                         <td>{{ $item->mime_type }}</td>
 
                         <td>
-                            <form action="{{ route('media.destroy', $item->media_id) }}"
+                            <form action="{{ route('admin.media.destroy', $item->media_id) }}"
                                   method="POST"
                                   onsubmit="return confirm('Yakin ingin menghapus media ini?')">
                                 @csrf

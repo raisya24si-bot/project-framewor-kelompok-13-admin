@@ -11,7 +11,7 @@
 <div class="card shadow-sm border-0">
     <div class="card-body">
 
-        <form action="{{ route('media.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.media.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             {{-- REF TABLE --}}
@@ -47,7 +47,7 @@
             </div>
 
             <div class="text-right">
-                <a href="{{ route('media.index') }}" class="btn btn-secondary">
+                <a href="{{ route('admin.media.index') }}" class="btn btn-secondary">
                     Batal
                 </a>
                 <button class="btn btn-success">

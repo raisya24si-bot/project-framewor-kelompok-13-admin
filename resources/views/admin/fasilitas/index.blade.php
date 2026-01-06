@@ -58,7 +58,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
             <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
             </li>
             <li class="breadcrumb-item active">Fasilitas Umum</li>
         </ol>
@@ -72,7 +72,7 @@
             </p>
         </div>
 
-        <a href="{{ route('fasilitas.create') }}" class="btn btn-success btn-icon-text">
+        <a href="{{ route('admin.fasilitas.create') }}" class="btn btn-success btn-icon-text">
             <i class="ti-plus btn-icon-prepend"></i> Tambah Fasilitas
         </a>
     </div>
@@ -81,7 +81,7 @@
 {{-- FILTER --}}
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-body">
-        <form action="{{ route('fasilitas.index') }}" method="GET">
+        <form action="{{ route('admin.fasilitas.index') }}" method="GET">
             <div class="form-row">
                 <div class="col-md-4 mb-2">
                     <input type="text" name="search" class="form-control"
@@ -176,12 +176,12 @@
 
                         {{-- AKSI --}}
                         <td>
-                            <a href="{{ route('fasilitas.edit', $item->fasilitas_id) }}"
+                            <a href="{{ route('admin.fasilitas.edit', $item->fasilitas_id) }}"
                                class="btn btn-primary btn-sm">
                                 <i class="ti-pencil"></i>
                             </a>
 
-                            <form action="{{ route('fasilitas.destroy', $item->fasilitas_id) }}"
+                            <form action="{{ route('admin.fasilitas.destroy', $item->fasilitas_id) }}"
                                   method="POST"
                                   class="d-inline"
                                   onsubmit="return confirm('Yakin ingin menghapus data ini?')">

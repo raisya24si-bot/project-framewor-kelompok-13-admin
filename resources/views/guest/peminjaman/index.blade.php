@@ -62,7 +62,7 @@
         <div class="container">
             <div class="row g-4">
                 
-                @forelse($items as $item)
+                @forelse($peminjaman as $item)
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="blog-item bg-light rounded overflow-hidden shadow-sm h-100">
                         
@@ -104,17 +104,24 @@
                                 Oleh: <strong>{{ $item->warga->nama ?? 'Warga Desa' }}</strong>
                             </p>
 
-                            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                                <div>
-                                    @if($item->status == 'Disetujui')
-                                        <span class="badge bg-success"><i class="fa fa-check-circle me-1"></i> Disetujui</span>
-                                    @elseif($item->status == 'Pending')
-                                        <span class="badge bg-warning text-dark"><i class="fa fa-hourglass-half me-1"></i> Menunggu</span>
-                                    @else
-                                        <span class="badge bg-danger"><i class="fa fa-times-circle me-1"></i> Ditolak</span>
-                                    @endif
-                                </div>
-                            </div>
+                            @php
+                                 $status = strtolower($item->status);
+                            @endphp
+
+                            @if($status === 'disetujui')
+                              <span class="badge bg-success">
+                                    <i class="fa fa-check-circle me-1"></i> Disetujui
+                            </span>
+                            @elseif($status === 'pending')
+                            <span class="badge bg-warning text-dark">
+                            <i class="fa fa-hourglass-half me-1"></i> Menunggu
+                            </span>
+                            @else
+                            <span class="badge bg-danger">
+                                <i class="fa fa-times-circle me-1"></i> Ditolak
+                            </span>
+                        @endif
+
 
                         </div>
                     </div>
@@ -135,7 +142,7 @@
             {{-- PAGINATION YANG DIPERBAIKI (PASTI TENGAH) --}}
             <div class="d-flex justify-content-center w-100 mt-5">
                 <style> .pagination { justify-content: center !important; } </style>
-                {{ $items->onEachSide(1)->links('pagination::bootstrap-5') }}
+                {{ $peminjaman->onEachSide(1)->links('pagination::bootstrap-5') }}
             </div>
 
         </div>

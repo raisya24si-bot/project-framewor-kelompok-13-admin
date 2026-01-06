@@ -12,70 +12,66 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 
-// ------------------------
-// HALAMAN PUBLIC
-// ------------------------
+// ========================
+// PUBLIC
+// ========================
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/ketua', function () {
-    return view('ketua');
-});
+Route::view('/ketua', 'ketua');
+Route::view('/anggota', 'anggota');
 
-Route::get('/anggota', function () {
-    return view('anggota');
-});
-
-Route::middleware(['checkislogin', 'checkrole:admin,petugas'])->group(function () {
-    Route::get('/admin/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-});
-
-
-
-// ------------------------
-// AUTH (LOGIN / LOGOUT)
-// ------------------------
+// ========================
+// AUTH
+// ========================
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
-
-
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect('/login');
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect()->route('login');
 })->name('logout');
 
+// ========================
+// PROFILE (SEMUA USER LOGIN)
+// ========================
+Route::middleware('checkislogin')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
 
-Route::middleware(['checkislogin'])->group(function () {
+// ========================
+// ADMIN + PETUGAS
+// ========================
+Route::middleware(['checkislogin', 'checkrole:admin,petugas'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-    // ========================
-    // ADMIN & PETUGAS
-    // ========================
-    Route::middleware(['checkrole:admin,petugas'])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
+
         Route::resource('petugas', PetugasFasilitasController::class);
-    });
+});
 
-    // ========================
-    // ADMIN ONLY
-    // ========================
-    Route::middleware(['checkrole:admin'])->group(function () {
+// ========================
+// ADMIN ONLY
+// ========================
+Route::middleware(['checkislogin', 'checkrole:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-        Route::resource('user', UserController::class);
         Route::resource('fasilitas', FasilitasUmumController::class);
+        Route::resource('user', UserController::class);
         Route::resource('syarat', SyaratFasilitasController::class);
         Route::resource('media', MediaController::class);
         Route::resource('peminjaman', PeminjamanFasilitasController::class);
         Route::resource('pembayaran', PembayaranFasilitasController::class);
-
-        // 🔥 MEDIA VIEW (ADMIN ONLY)
-        Route::get('/media/view/{id}', [MediaController::class, 'view'])
-            ->name('media.view');
-    });
-
 });
 
 //bagian guest 

@@ -9,10 +9,10 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                    <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('syarat.index') }}">Syarat Fasilitas</a>
+                    <a href="{{ route('admin.syarat.index') }}">Syarat Fasilitas</a>
                 </li>
                 <li class="breadcrumb-item active">Edit Syarat</li>
             </ol>
@@ -26,7 +26,7 @@
     <div class="card shadow-sm border-0">
         <div class="card-body">
 
-            <form action="{{ route('syarat.update', $data->syarat_id) }}" method="POST">
+            <form action="{{ route('admin.syarat.update', $data->syarat_id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -77,7 +77,7 @@
 
                 {{-- BUTTON --}}
                 <div class="d-flex justify-content-end mt-3">
-                    <a href="{{ route('syarat.index') }}" class="btn btn-light mr-2">Batal</a>
+                    <a href="{{ route('admin.syarat.index') }}" class="btn btn-light mr-2">Batal</a>
                     <button type="submit" class="btn btn-primary">
                         <i class="ti-save mr-2"></i> Update
                     </button>

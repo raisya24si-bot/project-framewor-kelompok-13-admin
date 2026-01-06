@@ -9,7 +9,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                    <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
                 </li>
                 <li class="breadcrumb-item active">Petugas Fasilitas</li>
             </ol>
@@ -21,7 +21,7 @@
                 <p class="text-muted mb-0">List petugas yang bertanggung jawab terhadap fasilitas.</p>
             </div>
 
-            <a href="{{ route('petugas.create') }}" class="btn btn-success btn-icon-text">
+            <a href="{{ route('admin.petugas.create') }}" class="btn btn-success btn-icon-text">
                 <i class="ti-plus btn-icon-prepend"></i> Tambah Petugas
             </a>
         </div>
@@ -54,12 +54,12 @@
                                 <td>{{ $item->peran }}</td>
 
                                 <td>
-                                    <a href="{{ route('petugas.edit', $item->petugas_id) }}"
+                                    <a href="{{ route('admin.petugas.edit', $item->petugas_id) }}"
                                        class="btn btn-primary btn-sm">
                                         <i class="ti-pencil"></i> Edit
                                     </a>
 
-                                    <form action="{{ route('petugas.destroy', $item->petugas_id) }}"
+                                    <form action="{{ route('admin.petugas.destroy', $item->petugas_id) }}"
                                           method="POST" class="d-inline"
                                           onsubmit="return confirm('Yakin ingin menghapus petugas ini?')">
                                         @csrf

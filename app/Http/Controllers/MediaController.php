@@ -9,26 +9,25 @@ use Illuminate\Support\Facades\Storage;
 class MediaController extends Controller
 {
     /**
-     * List media
+     * ========================
+     * ADMIN
+     * ========================
      */
+
+    // List media (ADMIN)
     public function index()
     {
         $data = Media::orderBy('created_at', 'desc')->paginate(10);
-
         return view('admin.media.index', compact('data'));
     }
 
-    /**
-     * Form upload media
-     */
+    // Form upload media
     public function create()
     {
         return view('admin.media.create');
     }
 
-    /**
-     * Simpan media
-     */
+    // Simpan media
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -38,7 +37,6 @@ class MediaController extends Controller
             'caption'   => 'nullable|string',
         ]);
 
-        // upload file
         $path = $request->file('file_url')->store('uploads/media', 'public');
 
         Media::create([
@@ -51,18 +49,15 @@ class MediaController extends Controller
         ]);
 
         return redirect()
-            ->route('media.index')
+            ->route('admin.media.index')
             ->with('success', 'Media berhasil diupload!');
     }
 
-    /**
-     * Hapus media
-     */
+    // Hapus media
     public function destroy($id)
     {
         $data = Media::findOrFail($id);
 
-        // hapus file fisik
         if ($data->file_url && Storage::disk('public')->exists($data->file_url)) {
             Storage::disk('public')->delete($data->file_url);
         }
@@ -70,22 +65,36 @@ class MediaController extends Controller
         $data->delete();
 
         return redirect()
-            ->route('media.index')
+            ->route('admin.media.index')
             ->with('success', 'Media berhasil dihapus!');
     }
 
-    public function view($id)
+    // Lihat media (ADMIN & GUEST)
+    public function show($id)
 {
     $media = Media::findOrFail($id);
 
-    // pastikan file ada
     if (!Storage::disk('public')->exists($media->file_url)) {
         abort(404, 'File tidak ditemukan');
     }
 
-    // tampilkan file
-    return response()->file(
-        storage_path('app/public/' . $media->file_url)
-    );
+    return view('admin.media.show', compact('media'));
 }
+
+
+    /**
+     * ========================
+     * GUEST
+     * ========================
+     */
+
+    // List media untuk guest
+    public function guestIndex()
+    {
+        $media = Media::orderBy('created_at', 'desc')
+            ->whereIn('mime_type', ['image/jpeg', 'image/png'])
+            ->paginate(12);
+
+        return view('guest.media.index', compact('media'));
+    }
 }

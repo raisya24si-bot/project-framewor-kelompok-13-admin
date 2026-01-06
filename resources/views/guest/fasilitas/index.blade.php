@@ -66,7 +66,7 @@
         <div class="container">
             <div class="row g-4">
                 
-                @forelse($items as $item)
+                @forelse($fasilitas as $item)
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="bg-light rounded h-100 p-4 shadow-sm">
                         
@@ -115,7 +115,7 @@
             {{-- >>> PAGINATION YANG DIPERBAIKI <<< --}}
             <div class="d-flex justify-content-center w-100 mt-5">
                 <style> .pagination { justify-content: center !important; } </style>
-                {{ $items->onEachSide(1)->links('pagination::bootstrap-5') }}
+                {{ $fasilitas->onEachSide(1)->links('pagination::bootstrap-5') }}
             </div>
 
         </div>

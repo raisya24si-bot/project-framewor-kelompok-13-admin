@@ -8,7 +8,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-custom bg-transparent p-0 mb-0">
             <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}"><i class="icon-grid"></i></a>
+                <a href="{{ route('admin.dashboard') }}"><i class="icon-grid"></i></a>
             </li>
             <li class="breadcrumb-item active">Peminjaman Fasilitas</li>
         </ol>
@@ -20,18 +20,17 @@
             <p class="text-muted mb-0">List peminjaman fasilitas oleh warga.</p>
         </div>
 
-        {{-- FIX ROUTE NAME --}}
-        <a href="{{ route('peminjaman.create') }}" class="btn btn-success btn-icon-text">
+        <a href="{{ route('admin.peminjaman.create') }}" class="btn btn-success btn-icon-text">
             <i class="ti-plus btn-icon-prepend"></i> Tambah Peminjaman
         </a>
     </div>
 </div>
 
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show shadow-sm">
-        {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
-    </div>
+<div class="alert alert-success alert-dismissible fade show shadow-sm">
+    {{ session('success') }}
+    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+</div>
 @endif
 
 <div class="card shadow-sm border-0">
@@ -45,62 +44,83 @@
                         <th>Fasilitas</th>
                         <th>Tanggal</th>
                         <th>Status</th>
+                        <th>Total Biaya</th>
+                        <th>Status Pembayaran</th>
                         <th>Tujuan</th>
-                        <th>Aksi</th>
+                        <th width="140">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @forelse ($data as $item)
-                        <tr>
-                            <td>{{ $item->warga->nama ?? '-' }}</td>
-                            <td>{{ $item->fasilitas->nama ?? '-' }}</td>
+                @forelse ($data as $item)
+                    <tr>
+                        <td>{{ $item->warga->nama ?? '-' }}</td>
+                        <td>{{ $item->fasilitas->nama ?? '-' }}</td>
 
-                            <td>
-                                {{ $item->tanggal_mulai }} → {{ $item->tanggal_selesai }}
-                            </td>
+                        <td>
+                            {{ $item->tanggal_mulai }} <br>
+                            <small class="text-muted">s/d {{ $item->tanggal_selesai }}</small>
+                        </td>
 
-                            <td>
-                                <span class="badge badge-{{ 
-                                    $item->status == 'pending' ? 'warning' :
-                                    ($item->status == 'disetujui' ? 'success' :
-                                    ($item->status == 'ditolak' ? 'danger' : 'info'))
-                                }}">
-                                    {{ ucfirst($item->status) }}
-                                </span>
-                            </td>
+                        {{-- STATUS PEMINJAMAN --}}
+                        <td>
+                            <span class="badge badge-{{ 
+                                $item->status === 'pending' ? 'warning' :
+                                ($item->status === 'disetujui' ? 'success' :
+                                ($item->status === 'ditolak' ? 'danger' : 'secondary'))
+                            }}">
+                                {{ ucfirst($item->status) }}
+                            </span>
+                        </td>
 
-                            <td>{{ $item->tujuan }}</td>
+                        {{-- TOTAL BIAYA (WAJIB DARI PEMINJAMAN) --}}
+                        <td>
+                            Rp {{ number_format($item->total_biaya, 0, ',', '.') }}
+                        </td>
 
-                            <td>
-                                {{-- FIX ROUTE NAME --}}
-                                <a href="{{ route('peminjaman.edit', $item->pinjam_id) }}"
-                                   class="btn btn-primary btn-sm">
-                                    <i class="ti-pencil"></i>
-                                </a>
+                        {{-- STATUS PEMBAYARAN --}}
+                        <td>
+                            @if($item->pembayaran->count() > 0)
+                                <span class="badge badge-success">Sudah bayar</span>
+                            @else
+                                <span class="badge badge-light text-muted">Belum bayar</span>
+                            @endif
+                        </td>
 
-                                {{-- FIX ROUTE NAME --}}
-                                <form action="{{ route('peminjaman.destroy', $item->pinjam_id) }}"
-                                      method="POST" class="d-inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                    @csrf
-                                    @method('DELETE')
+                        <td>{{ $item->tujuan }}</td>
 
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="ti-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+                        {{-- AKSI --}}
+                        <td>
+                            <a href="{{ route('admin.peminjaman.edit', $item->pinjam_id) }}"
+                               class="btn btn-primary btn-sm">
+                                <i class="ti-pencil"></i>
+                            </a>
 
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-muted py-4">Belum ada data peminjaman.</td>
-                        </tr>
-                    @endforelse
+                            <form action="{{ route('admin.peminjaman.destroy', $item->pinjam_id) }}"
+                                  method="POST"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="ti-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-muted py-4">
+                            Belum ada data peminjaman.
+                        </td>
+                    </tr>
+                @endforelse
                 </tbody>
-
             </table>
+        </div>
+
+        <div class="mt-3 d-flex justify-content-center">
+            {{ $data->links() }}
         </div>
 
     </div>

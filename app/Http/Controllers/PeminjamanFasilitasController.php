@@ -15,7 +15,7 @@ class PeminjamanFasilitasController extends Controller
         $search = $request->search;
         $perPage = $request->per_page ?? 10;
 
-        $data = PeminjamanFasilitas::with('fasilitas', 'warga')
+        $data = PeminjamanFasilitas::with('fasilitas', 'warga', 'pembayaran.media')
             ->when($search, function ($q) use ($search) {
                 $q->whereHas('warga', function ($w) use ($search) {
                     $w->where('nama', 'like', "%$search%");
@@ -53,7 +53,7 @@ class PeminjamanFasilitasController extends Controller
 
         PeminjamanFasilitas::create($request->all());
 
-        return redirect()->route('peminjaman.index')
+        return redirect()->route('admin.peminjaman.index')
             ->with('success', 'Peminjaman berhasil ditambahkan!');
     }
 
@@ -82,7 +82,7 @@ class PeminjamanFasilitasController extends Controller
         $data = PeminjamanFasilitas::findOrFail($id);
         $data->update($request->all());
 
-        return redirect()->route('peminjaman.index')
+        return redirect()->route('admin.peminjaman.index')
             ->with('success', 'Peminjaman berhasil diperbarui!');
     }
 
@@ -99,36 +99,30 @@ class PeminjamanFasilitasController extends Controller
     /* =========================
        GUEST INDEX
     ========================== */
-    /* =========================================
-       LOGIKA GUEST (PENGUNJUNG)
-    ========================================= */
 
     public function guestIndex(Request $request)
-    {
-        // 1. Mulai Query
-        $query = PeminjamanFasilitas::with(['fasilitas', 'warga']);
+{
+    $query = PeminjamanFasilitas::with(['fasilitas', 'warga', 'pembayaran.media']);
 
-        // 2. Logika SEARCH (Cari Nama Kegiatan / Tujuan)
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('tujuan', 'like', '%' . $search . '%')
-                  ->orWhereHas('fasilitas', function($f) use ($search) {
-                      $f->where('nama', 'like', '%' . $search . '%');
-                  });
-            });
-        }
-
-        // 3. Logika FILTER STATUS
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // 4. Eksekusi Data
-        $items = $query->orderBy('tanggal_mulai', 'desc')
-                       ->paginate(3) // Menggunakan 9 item agar grid rapi
-                       ->withQueryString(); // Filter tidak hilang saat pindah halaman
-
-        return view('guest.peminjaman.index', compact('items'));
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('tujuan', 'like', "%$search%")
+              ->orWhereHas('fasilitas', fn($f) => 
+                    $f->where('nama', 'like', "%$search%")
+              );
+        });
     }
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $peminjaman = $query->orderBy('tanggal_mulai', 'desc')
+        ->paginate(3)
+        ->withQueryString();
+
+    return view('guest.peminjaman.index', compact('peminjaman'));
+}
+
 }

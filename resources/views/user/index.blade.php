@@ -10,7 +10,7 @@
         <p class="text-muted">Kelola akun yang bisa mengakses sistem.</p>
     </div>
 
-    <a href="{{ route('user.create') }}" class="btn btn-success btn-icon-text">
+    <a href="{{ route('admin.user.create') }}" class="btn btn-success btn-icon-text">
         <i class="ti-plus btn-icon-prepend"></i> Tambah User
     </a>
 </div>
@@ -61,12 +61,12 @@
                             </td>
 
                             <td>
-                                <a href="{{ route('user.edit', $user->id) }}"
+                                <a href="{{ route('admin.user.edit', $user->id) }}"
                                    class="btn btn-primary btn-sm">
                                     <i class="ti-pencil"></i>
                                 </a>
 
-                                <form action="{{ route('user.destroy', $user->id) }}"
+                                <form action="{{ route('admin.user.destroy', $user->id) }}"
                                       method="POST"
                                       class="d-inline"
                                       onsubmit="return confirm('Yakin ingin menghapus user ini?')">
