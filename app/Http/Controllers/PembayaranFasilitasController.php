@@ -95,4 +95,48 @@ class PembayaranFasilitasController extends Controller
             ->route('pembayaran.index')
             ->with('success', 'Pembayaran berhasil dihapus!');
     }
+
+    /* =========================
+       GUEST INDEX
+    ========================== */
+   /* =========================================
+       LOGIKA GUEST (PENGUNJUNG)
+    ========================================= */
+
+    public function guestIndex(Request $request)
+    {
+        // 1. Ambil daftar Metode Pembayaran unik untuk dropdown filter
+        //    (Agar opsi dropdown otomatis sesuai data yang ada, misal: 'Tunai', 'Transfer')
+        $listMetode = PembayaranFasilitas::select('metode')->distinct()->pluck('metode');
+
+        // 2. Mulai Query
+        $query = PembayaranFasilitas::with(['peminjaman.warga', 'peminjaman.fasilitas']);
+
+        // 3. Logika SEARCH (Cari Nama Warga atau Nama Fasilitas)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                // Cari di tabel Warga (via relasi peminjaman)
+                $q->whereHas('peminjaman.warga', function($w) use ($search) {
+                    $w->where('nama', 'like', '%' . $search . '%');
+                })
+                // ATAU Cari di tabel Fasilitas (via relasi peminjaman)
+                ->orWhereHas('peminjaman.fasilitas', function($f) use ($search) {
+                    $f->where('nama', 'like', '%' . $search . '%');
+                });
+            });
+        }
+
+        // 4. Logika FILTER METODE
+        if ($request->filled('metode')) {
+            $query->where('metode', $request->metode);
+        }
+
+        // 5. Eksekusi Data
+        $items = $query->orderBy('tanggal', 'desc')
+                       ->paginate(3) // Tampilkan 9 item per halaman
+                       ->withQueryString(); // Agar filter tidak reset saat pindah halaman
+
+        return view('guest.pembayaran.index', compact('items', 'listMetode'));
+    }
 }

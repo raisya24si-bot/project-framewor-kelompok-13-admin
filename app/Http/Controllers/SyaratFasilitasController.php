@@ -81,4 +81,20 @@ class SyaratFasilitasController extends Controller
         return redirect()->route('syarat.index')
             ->with('success', 'Syarat fasilitas berhasil dihapus!');
     }
+
+    /* =========================
+       GUEST INDEX
+    ========================== */
+   /* =========================================
+       LOGIKA GUEST (PENGUNJUNG)
+    ========================================= */
+
+    public function guestIndex()
+    {
+        // Menampilkan syarat-syarat peminjaman
+        $items = SyaratFasilitas::with('fasilitas')->get();
+
+        // Mengarah ke: resources/views/guest/syarat/index.blade.php
+        return view('guest.syarat.index', compact('items'));
+    }
 }

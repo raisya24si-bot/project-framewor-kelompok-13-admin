@@ -171,4 +171,41 @@ class FasilitasUmumController extends Controller
         return redirect()->route('fasilitas.index')
             ->with('success', 'Fasilitas berhasil dihapus');
     }
+
+    /* =========================
+       GUEST INDEX
+    ========================== */
+    /* =========================================
+       LOGIKA GUEST (PENGUNJUNG)
+    ========================================= */
+
+    public function guestIndex(Request $request)
+    {
+        // 1. Ambil daftar RT unik untuk dropdown filter
+        $listRT = FasilitasUmum::select('rt')->distinct()->orderBy('rt')->pluck('rt');
+
+        // 2. Mulai Query
+        $query = FasilitasUmum::with('media');
+
+        // 3. Logika SEARCH (Cari Nama atau Alamat)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', '%' . $search . '%')
+                  ->orWhere('alamat', 'like', '%' . $search . '%');
+            });
+        }
+
+        // 4. Logika FILTER RT
+        if ($request->filled('rt')) {
+            $query->where('rt', $request->rt);
+        }
+
+        // 5. Eksekusi Data (Pagination 9 item)
+        $items = $query->orderBy('nama', 'asc')
+                       ->paginate(3)
+                       ->withQueryString(); 
+
+        return view('guest.fasilitas.index', compact('items', 'listRT'));
+    }
 }

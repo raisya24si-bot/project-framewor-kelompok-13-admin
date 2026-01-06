@@ -42,4 +42,23 @@ class DashboardController extends Controller
             'peminjamanTerbaru'
         ));
     }
+
+    /* =========================
+       GUEST INDEX
+    ========================== */
+  /* =========================================
+       LOGIKA GUEST (PENGUNJUNG)
+    ========================================= */
+    
+  public function guestIndex()
+{
+    // 1. Ambil Data Fasilitas
+    $fasilitas = FasilitasUmum::with('media')
+        ->orderBy('created_at', 'desc')
+        ->limit(3)
+        ->get();
+
+    // 2. Kirim Data (Perhatikan bagian compact)
+    return view('guest.dashboard.index', compact('fasilitas')); 
+}
 }

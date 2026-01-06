@@ -95,4 +95,40 @@ class PeminjamanFasilitasController extends Controller
         return redirect()->route('peminjaman.index')
             ->with('success', 'Peminjaman berhasil dihapus!');
     }
+
+    /* =========================
+       GUEST INDEX
+    ========================== */
+    /* =========================================
+       LOGIKA GUEST (PENGUNJUNG)
+    ========================================= */
+
+    public function guestIndex(Request $request)
+    {
+        // 1. Mulai Query
+        $query = PeminjamanFasilitas::with(['fasilitas', 'warga']);
+
+        // 2. Logika SEARCH (Cari Nama Kegiatan / Tujuan)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('tujuan', 'like', '%' . $search . '%')
+                  ->orWhereHas('fasilitas', function($f) use ($search) {
+                      $f->where('nama', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        // 3. Logika FILTER STATUS
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // 4. Eksekusi Data
+        $items = $query->orderBy('tanggal_mulai', 'desc')
+                       ->paginate(3) // Menggunakan 9 item agar grid rapi
+                       ->withQueryString(); // Filter tidak hilang saat pindah halaman
+
+        return view('guest.peminjaman.index', compact('items'));
+    }
 }
