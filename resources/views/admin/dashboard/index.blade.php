@@ -4,71 +4,153 @@
 
 @section('content')
 
-{{-- HEADER --}}
-<div class="page-header py-4">
-    <h3 class="font-weight-bold mb-1">Dashboard</h3>
-    <p class="text-muted">
-        Statistik Sistem Peminjaman Fasilitas Desa
-    </p>
+{{-- ================= HEADER / WELCOME ================= --}}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h3 class="font-weight-bold mb-1">
+            Selamat Datang, {{ Auth::user()->name }} 👋
+        </h3>
+        <p class="text-muted">
+            Berikut ringkasan aktivitas peminjaman fasilitas desa hari ini.
+        </p>
+    </div>
+    <div class="col-md-4 text-md-right mt-3 mt-md-0">
+        <span class="badge badge-light px-3 py-2">
+            {{ now()->format('l, d M Y') }}
+        </span>
+    </div>
 </div>
 
-{{-- CARD RINGKASAN --}}
+{{-- ================= HERO CARD (GAMBAR + INFO) ================= --}}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card card-tale overflow-hidden">
+            <div class="card-body p-0">
+                <div class="row no-gutters align-items-center">
+
+                    {{-- GAMBAR --}}
+                    <div class="col-md-6">
+                        <img
+                            src="{{ asset('assets/dashboard/welcome.png') }}"
+                            alt="Dashboard"
+                            class="img-fluid"
+                            style="height:100%; object-fit:cover;"
+                        >
+                    </div>
+
+                    {{-- TEKS --}}
+                    <div class="col-md-6 p-4 text-white">
+                         <small class="text-white-50 d-block mb-2">
+                    Dashboard Administrasi
+                        </small>
+
+                    <h4 class="font-weight-bold mb-3">
+                      Manajemen Fasilitas Umum Desa
+                     </h4>
+
+                 <p class="mb-4" style="max-width:420px; line-height:1.7;">
+                    Panel administrasi untuk mengelola data fasilitas umum,
+                    persyaratan peminjaman, petugas, dan aktivitas peminjaman
+                    secara terpusat.
+                    </p>
+
+                       <div class="d-flex flex-column">
+                   <span class="mb-2">
+                  <i class="ti-check mr-2"></i>
+                      Pengelolaan fasilitas & persyaratan
+                  </span>
+                   <span class="mb-2">
+                   <i class="ti-check mr-2"></i>
+                       Monitoring peminjaman fasilitas
+                  </span>
+                     <span>
+                       <i class="ti-check mr-2"></i>
+                        Manajemen petugas fasilitas desa
+                    </span>
+                 </div>
+
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- ================= CARD STATISTIK ================= --}}
 <div class="row">
 
     <div class="col-md-3 mb-4">
         <div class="card card-tale">
-            <div class="card-body">
-                <p class="mb-2">Total Fasilitas</p>
-                <h3 class="font-weight-bold">
-                    {{ \App\Models\FasilitasUmum::count() }}
-                </h3>
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-1">Total Fasilitas</p>
+                    <h3 class="font-weight-bold mb-0">
+                        {{ \App\Models\FasilitasUmum::count() }}
+                    </h3>
+                    <small class="text-white-50">Fasilitas tersedia</small>
+                </div>
+                <i class="ti-home icon-lg text-white"></i>
             </div>
         </div>
     </div>
 
     <div class="col-md-3 mb-4">
         <div class="card card-dark-blue">
-            <div class="card-body">
-                <p class="mb-2">Total Syarat</p>
-                <h3 class="font-weight-bold">
-                    {{ \App\Models\SyaratFasilitas::count() }}
-                </h3>
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-1">Total Syarat</p>
+                    <h3 class="font-weight-bold mb-0">
+                        {{ \App\Models\SyaratFasilitas::count() }}
+                    </h3>
+                    <small class="text-white-50">Syarat aktif</small>
+                </div>
+                <i class="ti-list icon-lg text-white"></i>
             </div>
         </div>
     </div>
 
     <div class="col-md-3 mb-4">
         <div class="card card-light-blue">
-            <div class="card-body">
-                <p class="mb-2">Petugas Fasilitas</p>
-                <h3 class="font-weight-bold">
-                    {{ \App\Models\PetugasFasilitas::count() }}
-                </h3>
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-1">Petugas Fasilitas</p>
+                    <h3 class="font-weight-bold mb-0">
+                        {{ \App\Models\PetugasFasilitas::count() }}
+                    </h3>
+                    <small class="text-white-50">Petugas terdaftar</small>
+                </div>
+                <i class="ti-user icon-lg text-white"></i>
             </div>
         </div>
     </div>
 
     <div class="col-md-3 mb-4">
         <div class="card card-light-danger">
-            <div class="card-body">
-                <p class="mb-2">Total Peminjaman</p>
-                <h3 class="font-weight-bold">
-                    {{ \App\Models\PeminjamanFasilitas::count() }}
-                </h3>
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-1">Total Peminjaman</p>
+                    <h3 class="font-weight-bold mb-0">
+                        {{ \App\Models\PeminjamanFasilitas::count() }}
+                    </h3>
+                    <small class="text-white-50">Data peminjaman</small>
+                </div>
+                <i class="ti-clipboard icon-lg text-white"></i>
             </div>
         </div>
     </div>
 
 </div>
+
+{{-- ================= CHART + TABLE ================= --}}
 <div class="row mt-4">
 
     {{-- DONUT --}}
-    <div class="col-md-6">
-        <div class="card">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Distribusi Fasilitas Berdasarkan Jenis</h5>
                 <p class="text-muted mb-4">
-                    Grafik ini menampilkan persentase jumlah fasilitas desa berdasarkan jenis fasilitas.
+                    Persentase jumlah fasilitas desa berdasarkan jenis fasilitas.
                 </p>
 
                 <div style="height:260px;">
@@ -78,13 +160,13 @@
         </div>
     </div>
 
-    {{-- TABEL PEMINJAMAN --}}
-    <div class="col-md-6">
-        <div class="card">
+    {{-- TABEL --}}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Peminjaman Terbaru</h5>
                 <p class="text-muted mb-3">
-                    Daftar peminjaman fasilitas terbaru oleh warga.
+                    Aktivitas peminjaman fasilitas terbaru oleh warga.
                 </p>
 
                 <div class="table-responsive">
@@ -100,27 +182,29 @@
                         <tbody>
                             @forelse ($peminjamanTerbaru as $item)
                                 <tr>
-                                    <td>{{ $item->warga->nama ?? '-' }}</td>
+                                    <td>
+                                        <strong>{{ $item->warga->nama ?? '-' }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ $item->created_at->diffForHumans() }}
+                                        </small>
+                                    </td>
                                     <td>{{ $item->fasilitas->nama ?? '-' }}</td>
                                     <td>
-                                        {{ $item->tanggal_mulai }}
+                                        {{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M') }}
                                         →
-                                        {{ $item->tanggal_selesai }}
+                                        {{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y') }}
                                     </td>
                                     <td>
                                         @php
-                                            $status = strtolower($item->status);
-
-                                            $statusClass = match($status) {
-                                                    'disetujui' => 'badge-success',
-                                                    'pending'   => 'badge-warning',
-                                                    'ditolak'   => 'badge-danger',
-                                                    'selesai'   => 'badge-info',
-                                                    default     => 'badge-secondary'
+                                            $statusClass = match(strtolower($item->status)) {
+                                                'disetujui' => 'badge-success',
+                                                'pending'   => 'badge-warning',
+                                                'ditolak'   => 'badge-danger',
+                                                'selesai'   => 'badge-info',
+                                                default     => 'badge-secondary'
                                             };
-                                         @endphp
-
-    
+                                        @endphp
                                         <span class="badge {{ $statusClass }}">
                                             {{ $item->status }}
                                         </span>

@@ -10,7 +10,7 @@ use App\Http\Controllers\PeminjamanFasilitasController;
 use App\Http\Controllers\PembayaranFasilitasController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\ProfileController;
 
 // ------------------------
 // HALAMAN PUBLIC
@@ -36,6 +36,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 // ------------------------
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
 
 Route::post('/logout', function () {
     Auth::logout();

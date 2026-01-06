@@ -57,5 +57,14 @@
       </a>
     </li>
 
+   <li class="nav-item">
+  <a class="nav-link {{ request()->routeIs('user.*') ? 'active' : '' }}"
+     href="{{ route('user.index') }}">
+    <i class="ti-user menu-icon"></i>
+    <span class="menu-title">Kelola User</span>
+  </a>
+</li>
+
+
   </ul>
 </nav>

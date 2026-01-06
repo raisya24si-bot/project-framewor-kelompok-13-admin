@@ -72,8 +72,8 @@
         </a>
 
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown">
-          <a class="dropdown-item">
-            <i class="ti-user text-primary"></i> Profil Saya
+          <a class="dropdown-item" href="{{ route('profile') }}">
+          <i class="ti-user text-primary"></i> Profil Saya
           </a>
 
           <form action="{{ route('logout') }}" method="POST">
