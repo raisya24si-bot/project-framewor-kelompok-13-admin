@@ -27,8 +27,11 @@ Route::get('/anggota', function () {
     return view('anggota');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard');
+Route::middleware(['checkislogin', 'checkrole:admin,petugas'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+});
+
 
 
 // ------------------------
