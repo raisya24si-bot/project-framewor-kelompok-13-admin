@@ -74,3 +74,14 @@ Route::middleware(['checkislogin'])->group(function () {
     });
 
 });
+
+//bagian guest 
+// Route Dashboard
+Route::get('/dashboard', [DashboardController::class, 'guestIndex'])->name('guest.dashboard');
+
+// Menu Tamu Lainnya
+Route::get('/fasilitas',  [FasilitasUmumController::class, 'guestIndex'])->name('guest.fasilitas');
+Route::get('/pembayaran', [PembayaranFasilitasController::class, 'guestIndex'])->name('guest.pembayaran');
+Route::get('/peminjaman', [PeminjamanFasilitasController::class, 'guestIndex'])->name('guest.peminjaman');
+Route::get('/petugas',    [PetugasFasilitasController::class, 'guestIndex'])->name('guest.petugas');
+Route::get('/syarat',     [SyaratFasilitasController::class, 'guestIndex'])->name('guest.syarat');
